@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\state;
 
-class CustomersController extends Controller
+class StateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,9 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        return view('customer.index');
+        $data = state::all();
+        
+        return view('state.index', ['datas' => $data ]);
     }
 
     /**
@@ -23,7 +26,7 @@ class CustomersController extends Controller
      */
     public function create()
     {
-        return view('customer.create');
+        return view('state.create');
     }
 
     /**
@@ -34,7 +37,15 @@ class CustomersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request...
+ 
+        $flight = new state;
+ 
+        $flight->name = $request->name;
+ 
+        $flight->save();
+
+        return redirect('state/list');
     }
 
     /**

@@ -23,9 +23,18 @@ Route::get('/dashboard', function () {
 
 Route::get('users', [App\Http\Controllers\UserController::class,'index'])->middleware(['auth']);
 
-Route::get('customers', [App\Http\Controllers\CustomersController::class,'index'])->middleware(['auth']);
+Route::get('/customers/list', [App\Http\Controllers\CustomersController::class,'index'])->middleware(['auth']);
+
+Route::get('/customer/create', [App\Http\Controllers\CustomersController::class,'create'])->middleware(['auth']);
 
 
-Route::get('system-settings', [App\Http\Controllers\SystemconfigController::class,'index'])->middleware(['auth']);
+Route::get('sms-settings', [App\Http\Controllers\SmsController::class,'index'])->middleware(['auth']);
+
+Route::get('state/list', [App\Http\Controllers\StateController::class,'index'])->middleware(['auth']);
+
+Route::get('state/create', [App\Http\Controllers\StateController::class,'create'])->middleware(['auth']);
+
+Route::post('state/store', [App\Http\Controllers\StateController::class,'store'])->middleware(['auth'])->name('state/store');
+
 
 require __DIR__.'/auth.php';
