@@ -21,4 +21,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::get('users', [App\Http\Controllers\UserController::class,'index'])->middleware(['auth']);
+
+Route::get('customers', [App\Http\Controllers\CustomersController::class,'index'])->middleware(['auth']);
+
+
+Route::get('system-settings', [App\Http\Controllers\SystemconfigController::class,'index'])->middleware(['auth']);
+
 require __DIR__.'/auth.php';
