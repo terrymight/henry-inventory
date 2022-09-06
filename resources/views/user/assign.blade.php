@@ -14,7 +14,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ url('/dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ url('/state/list') }}">State List</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('/users/'.$id.'/show') }}">Dispatcher Details</a></li>
                         <li class="breadcrumb-item active">State Create</li>
                     </ol>
 
@@ -46,19 +46,26 @@
                 </div>
 
                 <!-- /.card-body -->
-                <form method="POST" action="{{ $state->id ? url('state/'.$state->id) : url('state/store') }}">
-                    @if ($state->id) @method('PUT') @endif
+                <form method="POST" action="{{ url('assign/store') }}">
+                   
                     @csrf
                     <div class="card-body">
                         <div class="row">
+                            <input type="hidden" name="user_id" value="{{ $id }}">
                             <div class="form-group">
-                                <label>Enter State :</label>
-                                <input value="{{ old('name', $state->name) }}" id="name" name="name" type="text" class="form-control" placeholder="Enter State to be added" required autofocus>
+                                <label>Select State</label>
+                                <select class="form-control select2bs4" style="width: 100%;" name="state_id" id="state_id">
+                                    @foreach($states as $state)
+                                    <option value="{{ $state->id }}" @selected(old('state_id')==$state->name)>
+                                        {{ $state->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="row">
-                        <div class="form-group">
-                                <button class="btn btn-primary btn-sm"  type="submit">Submit</button>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-sm" type="submit">Submit</button>
                             </div>
                         </div>
                     </div>

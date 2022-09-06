@@ -75,10 +75,19 @@
            </li>
 
            <li class="nav-item">
-             <a href="{{ url('/users') }}" class="nav-link">
+             <a href="{{ url('users/list') }}" class="nav-link">
                <i class="nav-icon fas fa-user-alt"></i>
                <p>
-                 Manage Users
+                 Manage Dispatcher/Users
+               </p>
+             </a>
+           </li>
+
+           <li class="nav-item">
+             <a href="{{ url('products/list') }}" class="nav-link">
+               <i class="nav-icon fas fa-luggage-cart"></i>
+               <p>
+                 Manage Products
                </p>
              </a>
            </li>

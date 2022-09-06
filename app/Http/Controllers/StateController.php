@@ -26,7 +26,8 @@ class StateController extends Controller
      */
     public function create()
     {
-        return view('state.create');
+        $state = new state;
+        return view('state.create', compact('state'));
     }
 
     /**
@@ -38,12 +39,13 @@ class StateController extends Controller
     public function store(Request $request)
     {
         // Validate the request...
- 
-        $flight = new state;
- 
-        $flight->name = $request->name;
- 
-        $flight->save();
+        $this->validate($request, [
+            'name' => 'required|max:255',
+        ]);
+
+        $state_request = new state;
+        $state_request->name = $request->name;
+        $state_request->save();
 
         return redirect('state/list');
     }
@@ -67,7 +69,8 @@ class StateController extends Controller
      */
     public function edit($id)
     {
-        //
+        $state = state::where('id',$id)->firstOrFail();
+        return view('state.create', compact('state'));
     }
 
     /**
@@ -79,7 +82,13 @@ class StateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255',
+        ]);
+        $state = state::where('id',$id)->firstOrFail();
+        $state->name = $request->name;
+        $state->save();
+        return redirect('state/list');
     }
 
     /**
@@ -90,6 +99,8 @@ class StateController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $state = state::where('id',$id)->firstOrFail();
+        $state->delete();
+        return redirect('state/list');
     }
 }
