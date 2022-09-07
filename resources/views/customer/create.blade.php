@@ -104,10 +104,13 @@
                                 <!-- /.form-group -->
                                 <div class="form-group">
                                     <label>Select Product (Multiple Selection Allowed)</label>
-                                    <select class="select2" multiple="multiple" name="products[]" id="products" style="width: 100%;">
-                                        <option>Alaska</option>
-                                        <option>Delaware</option>
-                                        <option>Tennessee</option>
+                                    <select class="select2" multiple="multiple" name="products" id="products" style="width: 100%;">
+
+                                        @foreach($products as $product)
+                                        <option value="{{ $product->id }}" @selected(old('name')==$product->name)>
+                                            {{ $product->name }}
+                                        </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <!-- /.form-group -->

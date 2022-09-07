@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\customer;
 use App\Models\Dispatcher;
 use App\Models\DispatcherState;
+use App\Models\Product;
 use App\Models\state;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,8 +36,10 @@ class CustomersController extends Controller
         ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
         ->get();
 
+        $products = Product::all();
+
         $data = new customer;
-        return view('customer.create', compact(['data','states']));
+        return view('customer.create', compact(['data','states','products']));
     }
 
     /**

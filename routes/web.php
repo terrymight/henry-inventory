@@ -46,10 +46,11 @@ Route::post('users/store', [App\Http\Controllers\UserController::class,'store'])
 Route::get('assign/{id}/create', [App\Http\Controllers\UserController::class,'assign'])->middleware(['auth']);
 Route::post('assign/store', [App\Http\Controllers\UserController::class,'storeState'])->middleware(['auth']);
 
-Route::get('products/list', function(){
-    return view('product.index');
-})->middleware(['auth']);
-
+Route::get('products/list', [App\Http\Controllers\ProductsController::class,'index'])->middleware(['auth']);
+Route::get('products/create', [App\Http\Controllers\ProductsController::class,'create'])->middleware(['auth']);
+Route::post('products/store', [App\Http\Controllers\ProductsController::class,'store'])->middleware(['auth'])->name('products.store');
+Route::get('products/{id}/edit', [App\Http\Controllers\ProductsController::class,'edit'])->middleware(['auth']);
+Route::put('products/{id}', [App\Http\Controllers\ProductsController::class,'update'])->middleware(['auth']);
 
 Route::get('sms-settings', [App\Http\Controllers\SmsController::class,'index'])->middleware(['auth']);
 
