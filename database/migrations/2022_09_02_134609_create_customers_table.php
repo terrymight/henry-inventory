@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('customer_address');
             $table->string('customer_email');
             $table->string('customer_state');
+            $table->bigInteger('invoice_number');
             $table->date('date_of_delivery');
             $table->text('total_cost_of_products');
             $table->char('dispatcher_id', 200);

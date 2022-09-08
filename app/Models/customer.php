@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class customer extends Model
 {
+   
+
     protected $fillable = [
         'fullname',
         'phone_number',
@@ -18,7 +20,8 @@ class customer extends Model
         'total_cost_of_products',
         'customer_address',
         'dispatcher_note',
-        'customer_email'
+        'customer_email',
+        'invoice_number'
     ];
 
         /**
@@ -36,7 +39,6 @@ class customer extends Model
         $this->attributes['products'] = json_encode($value);
 
     }
-
         /**
 
      * Get the Products

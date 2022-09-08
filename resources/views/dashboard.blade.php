@@ -1,6 +1,6 @@
-@include('header')
+@include('partials.header')
 
-@include('sidebar')
+@include('partials.sidebar')
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -96,4 +96,4 @@
 
 
 
-  @include('footer')
+  @include('partials.footer')

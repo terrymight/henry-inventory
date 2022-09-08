@@ -59,18 +59,20 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Phone number </th>
-                    <th>Product (s)</th>
-                    <th>State</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th></th>
+                    <th >#Invoice No</th>
+                    <th >Name</th>
+                    <th >Phone number </th>
+                    <th >Product (s)</th>
+                    <th >State</th>
+                    <th >Price</th>
+                    <th >Status</th>
+                    <th class="col-2"></th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach ($datas as $data)
                   <tr>
+                    <td>{{ $data->invoice_number }}</td>
                     <td>{{ $data->fullname }}</td>
                     <td>{{ $data->phone_number }}</td>
                     <td>
@@ -95,7 +97,7 @@
                       <td><span class="badge bg-danger">{{ $data->products_status }}</span></td>
                       @endif
 
-                      <td>
+                      <td class="col-5">
                         <a class="btn btn-primary btn-sm" href="#">
                           <i class="fas fa-folder">
                           </i>
@@ -117,13 +119,14 @@
                 </tbody>
                 <tfoot>
                   <tr>
+                    <th>#Invoice No</th>
                     <th>Name</th>
                     <th>Phone number </th>
                     <th>Product (s)</th>
                     <th>State</th>
                     <th>Price</th>
                     <th>Status</th>
-                    <th></th>
+                    <th class="col-md-6"></th>
                   </tr>
                 </tfoot>
               </table>

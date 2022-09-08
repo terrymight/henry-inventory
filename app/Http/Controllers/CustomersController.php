@@ -19,7 +19,7 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        $datas = customer::all();
+        $datas = customer::all()->sortBy('id');
 
         return view('customer.index', compact('datas'));
     }
@@ -36,7 +36,7 @@ class CustomersController extends Controller
         ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
         ->get();
 
-        $products = Product::all();
+        $products = Product::all()->sortBy('id');
 
         $data = new customer;
         return view('customer.create', compact(['data','states','products']));
@@ -73,7 +73,8 @@ class CustomersController extends Controller
             'customer_address' => $request->customer_address,
             'dispatcher_note' => $request->dispatcher_note,
             'dispatcher_id' => $request->customer_state,
-            'customer_email' => $request->customer_email
+            'customer_email' => $request->customer_email,
+            'invoice_number' => $this->set_invoice(),
         ]);
 
         return redirect('/customers/list');
@@ -141,6 +142,7 @@ class CustomersController extends Controller
         $update_req->total_cost_of_products = $request->total_cost_of_products;
         $update_req->customer_address = $request->customer_address;
         $update_req->dispatcher_note = $request->dispatcher_note;
+        
 
         $update_req->save();
         //dd($request->all());
@@ -159,5 +161,15 @@ class CustomersController extends Controller
         $del_req = customer::where('id',$id)->firstOrFail();
         $del_req->delete();
         return redirect()->route('customers.list');
+    }
+
+    public function set_invoice()
+    {
+        $timestamp = mt_rand(1, time());
+
+//Format that timestamp into a readable date string.
+$randomDate = date("d M Y", $timestamp);
+        $andom = date("Ym").random_int(10,50);
+        return $andom;
     }
 }
