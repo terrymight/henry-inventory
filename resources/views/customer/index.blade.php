@@ -98,11 +98,12 @@
                       @endif
 
                       <td class="col-5">
-                        <a class="btn btn-primary btn-sm" href="#">
+                        <a class="btn btn-primary btn-sm" href="{{ url('customer/show/'.$data->id) }}">
                           <i class="fas fa-folder">
                           </i>
                           View
                         </a>
+                        @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
                         <a class="btn btn-info btn-sm" href="{{ url('customer/'.$data->id.'/edit') }}">
                           <i class="fas fa-pencil-alt">
                           </i>
@@ -113,6 +114,7 @@
                           </i>
                           Delete
                         </a>
+                        @endif
                       </td>
                   </tr>
                   @endforeach

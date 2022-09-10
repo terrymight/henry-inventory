@@ -14,13 +14,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+
+Route::get('/', [App\Http\Controllers\InvoiceController::class,'index']);
+Route::post('/find-invoice', [App\Http\Controllers\InvoiceController::class,'store']);
+// Route::get('/find-invoice', [App\Http\Controllers\InvoiceController::class,'store']);
+
+Route::get('application/list', [App\Http\Controllers\ApplicationController::class,'index'])->middleware(['auth'])->name('application.list');
+Route::get('application/{id}/edit', [App\Http\Controllers\ApplicationController::class,'edit'])->middleware(['auth']);
+Route::put('application/{id}', [App\Http\Controllers\ApplicationController::class,'update'])->middleware(['auth']);
 
 Route::get('/customers/list', [App\Http\Controllers\CustomersController::class,'index'])->middleware(['auth'])->name('customers.list');
 Route::get('/customer/create', [App\Http\Controllers\CustomersController::class,'create'])->middleware(['auth']);
@@ -28,6 +34,7 @@ Route::get('customer/{id}/edit', [App\Http\Controllers\CustomersController::clas
 Route::put('customer/{id}', [App\Http\Controllers\CustomersController::class,'update'])->middleware(['auth']);
 Route::post('customer/store', [App\Http\Controllers\CustomersController::class,'store'])->middleware(['auth'])->name('customer/store');
 Route::delete('customer/destroy/{id}', [App\Http\Controllers\CustomersController::class,'destroy'])->middleware(['auth'])->name('customer.destroy');
+Route::get('customer/show/{id}', [App\Http\Controllers\CustomersController::class,'show'])->middleware(['auth']);
 
 Route::get('state/list', [App\Http\Controllers\StateController::class,'index'])->middleware(['auth']);
 Route::get('state/create', [App\Http\Controllers\StateController::class,'create'])->middleware(['auth']);
