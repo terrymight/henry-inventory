@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\customer;
 use App\Models\Dispatcher;
 use App\Models\DispatcherState;
@@ -89,7 +90,9 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = customer::where('id',$id)->first();
+        $application = Application::where('id', 1)->first();
+        return view('customer.show', compact('data','application'));
     }
 
     /**
@@ -100,11 +103,16 @@ class CustomersController extends Controller
      */
     public function edit($id)
     {
+        $states = DB::table('states')
+        ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
+        ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
+        ->get();
+        $products = Product::all()->sortBy('id');
         $data = customer::where('id',$id)->firstOrFail();
         $input = customer::where('id', $id)->firstOrFail();
         $selected = [];
         $selected['products'] = json_encode($input->products);
-        return view('customer.create', compact('data'));
+        return view('customer.create', compact(['data','states','products']));
     }
 
     /**

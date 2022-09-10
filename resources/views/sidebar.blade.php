@@ -2,7 +2,7 @@
  <aside class="main-sidebar sidebar-dark-primary elevation-4">
    <!-- Brand Logo -->
    <a href="index3.html" class="brand-link">
-   <img src="{{URL::asset('dist/img/AdminLTELogo.png')}}" class="brand-image img-circle elevation-3" style="opacity: .8" alt="AdminLTE Logo">
+     <img src="{{URL::asset('dist/img/AdminLTELogo.png')}}" class="brand-image img-circle elevation-3" style="opacity: .8" alt="AdminLTE Logo">
      <span class="brand-text font-weight-light">{{ config('app.name') }}</span>
    </a>
 
@@ -56,53 +56,60 @@
 
 
          <li class="nav-item menu-close">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-cogs"></i>
-              <p>
-                Administrator Control
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
+           <a href="#" class="nav-link active">
+             <i class="nav-icon fas fa-cogs"></i>
+             <p>
+               Administrator Control
+               <i class="right fas fa-angle-left"></i>
+             </p>
+           </a>
+           <ul class="nav nav-treeview">
 
-            <li class="nav-item">
-             <a href="{{ url('state/list') }}" class="nav-link">
-               <i class="nav-icon fas fa-map-marked-alt"></i>
-               <p>
-                 Manage System States
-               </p>
-             </a>
-           </li>
+             <li class="nav-item">
+               <a href="{{ url('state/list') }}" class="nav-link">
+                 <i class="nav-icon fas fa-map-marked-alt"></i>
+                 <p>
+                   Manage System States
+                 </p>
+               </a>
+             </li>
 
-           <li class="nav-item">
-             <a href="{{ url('users/list') }}" class="nav-link">
-               <i class="nav-icon fas fa-user-alt"></i>
-               <p>
-                 Manage Dispatcher/Users
-               </p>
-             </a>
-           </li>
+             <li class="nav-item">
+               <a href="{{ url('users/list') }}" class="nav-link">
+                 <i class="nav-icon fas fa-user-alt"></i>
+                 <p>
+                   Manage Dispatcher/Users
+                 </p>
+               </a>
+             </li>
 
-           <li class="nav-item">
-             <a href="{{ url('products/list') }}" class="nav-link">
-               <i class="nav-icon fas fa-luggage-cart"></i>
-               <p>
-                 Manage Products
-               </p>
-             </a>
-           </li>
+             <li class="nav-item">
+               <a href="{{ url('products/list') }}" class="nav-link">
+                 <i class="nav-icon fas fa-luggage-cart"></i>
+                 <p>
+                   Manage Products
+                 </p>
+               </a>
+             </li>
 
-           <li class="nav-item">
-             <a href="{{ url('/sms-settings/') }}" class="nav-link">
-               <i class="fas fa-sms nav-icon"></i>
-               <p>SMS Config</p>
-             </a>
-           </li>
+             <li class="nav-item">
+               <a href="{{ url('/sms-settings/') }}" class="nav-link">
+                 <i class="fas fa-sms nav-icon"></i>
+                 <p>SMS Config</p>
+               </a>
+             </li>
 
-         </ul>
-          </li>
+             <li class="nav-item">
+               <a href="{{ url('application/list') }}" class="nav-link">
+                 <i class="fas fas fa-cogs"></i>
+                 <p>Application Config</p>
+               </a>
+             </li>
 
-         
+           </ul>
+         </li>
+
+
 
        </ul>
      </nav>
