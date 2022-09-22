@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('company_name');
             $table->string('address');
+            $table->string('orders');
             $table->bigInteger('phone');
             $table->bigInteger('phone_sec')->nullable();
             $table->string('email');

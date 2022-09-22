@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('phone_number');
             $table->bigInteger('whatsapp_number')->nullable();
             $table->string('customer_address');
-            $table->string('customer_email');
+            $table->string('customer_email')->nullable();
             $table->string('customer_state');
             $table->bigInteger('invoice_number');
             $table->date('date_of_delivery');

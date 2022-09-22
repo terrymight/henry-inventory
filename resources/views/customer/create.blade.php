@@ -36,7 +36,7 @@
 
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Add Customer Form</h3>
+                    <h3 class="card-title">Add Customer Form </h3>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -89,7 +89,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Customer Email : </label>
+                                    <label>Customer Email (optional) : </label>
                                     <input type="email" class="form-control" value="{{ old('customer_email', $data->customer_email) }}" id="customer_email" name="customer_email" placeholder="Enter customer email..." required>
                                 </div>
 
@@ -101,24 +101,8 @@
                             </div>
 
                             <div class="col-md-6">
-                                <!-- /.form-group -->
-                                <div class="form-group">
-                                    <label>Select Product (Multiple Selection Allowed)</label>
-                                    <select class="select2" multiple="multiple" name="products[]" id="products" style="width: 100%;">
-
-                                        @foreach($products as $product)
-                                        <option  @selected(old('name')==$product->name)>
-                                            {{ $product->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <!-- /.form-group -->
-
-                                <div class="form-group">
-                                    <label>Total Cost of Product(s) : </label>
-                                    <input type="number" class="form-control" value="{{ old('total_cost_of_products', $data->total_cost_of_products) }}" id="total_cost_of_products" name="total_cost_of_products" placeholder="Enter cost of product" required>
-                                </div>
+                            @livewire('customer-products')
+                              
                             </div>
 
                             <div class="col-md-6">
@@ -140,12 +124,16 @@
                                 </div>
 
                             </div>
-
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                                    <!-- <button >Submit</button> -->
+                                    <input type="submit" class="btn btn-primary" value="Save Order">
+                                    
+                                    
                                 </div>
+
                             </div>
+                            
                         </div>
                     </div>
                 </form>

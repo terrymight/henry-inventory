@@ -79,13 +79,17 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
+                      <th>Qty</th>
                       <th>Product</th>
+                      <th>Subtotal</th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach ($data->products as $product)
                     <tr>
-                      <td>{{ $product }}</td>
+                      <td>{{ $product['qty'] }}</td>
+                      <td>{{ $product['pro'] }}</td>
+                      <td>{{ $product['px'] }}</td>
                     </tr>
                     @endforeach
                   </tbody>
@@ -104,15 +108,15 @@
                 <p class="lead">Product Current Status:</p>
                 <p class="lead">
                   @if( $data->products_status == 'not processed' )
-                    <span class="badge bg-primary">{{ $data->products_status }}</span>
+                  <span class="badge bg-primary">{{ $data->products_status }}</span>
                   @elseif ( $data->products_status == 'delivered' )
-                    <span class="badge bg-success">{{ $data->products_status }}</span>
-                  @elseif ( $data->products_status == 'processed' )                 
-                    <span class="badge bg-primary">{{ $data->products_status }}</span>
+                  <span class="badge bg-success">{{ $data->products_status }}</span>
+                  @elseif ( $data->products_status == 'processed' )
+                  <span class="badge bg-primary">{{ $data->products_status }}</span>
                   @elseif ( $data->products_status == 'rescheduled' )
-                    <span class="badge bg-danger">{{ $data->products_status }}</span>
+                  <span class="badge bg-danger">{{ $data->products_status }}</span>
                   @elseif ( $data->products_status == 'canceled' )
-                    <span class="badge bg-danger">{{ $data->products_status }}</span>
+                  <span class="badge bg-danger">{{ $data->products_status }}</span>
                   @endif
                 </p>
               </div>
@@ -133,14 +137,30 @@
             <!-- /.row -->
 
             <!-- this row will not appear when printing -->
-            <div class="row no-print">
-              <div class="col-12">
-                @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
-                <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Send Invoice
-                </button>
-                @endif
+            <form method="POST" action="{{ url('customer/notification/'.$data->id) }}">
+              @csrf
+              <div class="row no-print">
+
+
+                <div class="col-12">
+                  <div class="custom-control custom-checkbox">
+                    <input type="hidden" value="{{ $data->customer_email }}" name="customer_email">
+                    <input value="email_notification" name="email_notification" class="custom-control-input custom-control-input-danger" type="checkbox" id="email_notification" checked>
+                    <label for="email_notification" class="custom-control-label">Send Email?</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="hidden" value="{{ $data->phone_number }}" name="phone_number">
+                    <input value="sms_notification" name="sms_notification" class="custom-control-input custom-control-input-danger" type="checkbox" id="sms_notification">
+                    <label for="sms_notification" class="custom-control-label">Send SMS?</label>
+                  </div>
+
+                  @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
+                  <button type="submit" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Send Invoice
+                  </button>
+                  @endif
+                </div>
               </div>
-            </div>
+            </form>
           </div>
           <!-- /.invoice -->
         </div><!-- /.col -->
