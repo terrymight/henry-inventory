@@ -32,9 +32,10 @@ Route::get('/customers/list', [App\Http\Controllers\CustomersController::class,'
 Route::get('/customer/create', [App\Http\Controllers\CustomersController::class,'create'])->middleware(['auth']);
 Route::get('customer/{id}/edit', [App\Http\Controllers\CustomersController::class,'edit'])->middleware(['auth']);
 Route::put('customer/{id}', [App\Http\Controllers\CustomersController::class,'update'])->middleware(['auth']);
+Route::post('customer/notification/{id}', [App\Http\Controllers\CustomersController::class,'notify'])->middleware(['auth']);
 Route::post('customer/store', [App\Http\Controllers\CustomersController::class,'store'])->middleware(['auth'])->name('customer/store');
 Route::delete('customer/destroy/{id}', [App\Http\Controllers\CustomersController::class,'destroy'])->middleware(['auth'])->name('customer.destroy');
-Route::get('customer/show/{id}', [App\Http\Controllers\CustomersController::class,'show'])->middleware(['auth']);
+Route::get('customer/show/{id}', [App\Http\Controllers\CustomersController::class,'show'])->middleware(['auth'])->name('customers.notify');
 
 Route::get('state/list', [App\Http\Controllers\StateController::class,'index'])->middleware(['auth']);
 Route::get('state/create', [App\Http\Controllers\StateController::class,'create'])->middleware(['auth']);

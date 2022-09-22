@@ -44,6 +44,7 @@
                                     <tr>
                                         <th>Application Name</th>
                                         <th>Contact Phone</th>
+                                        <th>Business Reg</th>
                                         <th>Contact Phone 2</th>
                                         <th>Contact Email</th>
                                         <th>Contact Address</th>
@@ -53,8 +54,11 @@
                                 <tbody>
                                     @foreach ($datas as $data)
                                     <tr>
-                                        <td class="col-md-2">{{ $data->company_name }}</td>
+                                        <td class="col-md-2">
+                                        
+                                        {{ $data->company_name }}</td>
                                         <td class="col-md-2">{{ $data->phone }}</td>
+                                        <td class="col-md-2">{{ $data->orders }}</td>
                                         <td class="col-md-2">{{ $data->phone_sec }}</td>
                                         <td class="col-md-2">{{ $data->email }}</td>
                                         <td class="col-md-2">{{ $data->address }}</td>

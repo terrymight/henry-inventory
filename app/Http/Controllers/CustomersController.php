@@ -8,8 +8,11 @@ use App\Models\Dispatcher;
 use App\Models\DispatcherState;
 use App\Models\Product;
 use App\Models\state;
+use App\Models\User;
+use App\Notifications\PushBoardcast;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CustomersController extends Controller
 {
@@ -20,8 +23,9 @@ class CustomersController extends Controller
      */
     public function index()
     {
+        
         $datas = customer::all()->sortBy('id');
-
+        
         return view('customer.index', compact('datas'));
     }
 
@@ -32,15 +36,14 @@ class CustomersController extends Controller
      */
     public function create()
     {
-        $states = DB::table('states')
-        ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
-        ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
-        ->get();
 
-        $products = Product::all()->sortBy('id');
+        $states = DB::table('states')
+            ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
+            ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
+            ->get();
 
         $data = new customer;
-        return view('customer.create', compact(['data','states','products']));
+        return view('customer.create', compact(['data', 'states']));
     }
 
     /**
@@ -59,18 +62,17 @@ class CustomersController extends Controller
             'customer_state' => 'required|max:255',
             'products' => 'required|max:255',
             'date_of_delivery' => 'required|max:255',
-            'total_cost_of_products' => 'required|max:255',
             'customer_address' => 'required|max:255',
             'dispatcher_note' => 'required|max:255'
         ]);
 
-        customer::create([
+        $data = customer::create([
             'fullname' => $request->fullname,
             'phone_number' => $request->phone_number,
             'customer_state' => $request->customer_state,
             'products' => $request->products,
             'date_of_delivery' => $request->date_of_delivery,
-            'total_cost_of_products' => $request->total_cost_of_products,
+            'total_cost_of_products' => $this->sum($request),
             'customer_address' => $request->customer_address,
             'dispatcher_note' => $request->dispatcher_note,
             'dispatcher_id' => $request->customer_state,
@@ -78,8 +80,13 @@ class CustomersController extends Controller
             'invoice_number' => $this->set_invoice(),
         ]);
 
+        /**
+         * sends user invoice using the 
+         * customoer infor
+         * @param $request $data
+         */
+        $this->sendMail($request, $data);
         return redirect('/customers/list');
-
     }
 
     /**
@@ -90,9 +97,9 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        $data = customer::where('id',$id)->first();
+        $data = customer::where('id', $id)->first();
         $application = Application::where('id', 1)->first();
-        return view('customer.show', compact('data','application'));
+        return view('customer.show', compact('data', 'application'));
     }
 
     /**
@@ -104,15 +111,15 @@ class CustomersController extends Controller
     public function edit($id)
     {
         $states = DB::table('states')
-        ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
-        ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
-        ->get();
+            ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
+            ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
+            ->get();
         $products = Product::all()->sortBy('id');
-        $data = customer::where('id',$id)->firstOrFail();
+        $data = customer::where('id', $id)->firstOrFail();
         $input = customer::where('id', $id)->firstOrFail();
         $selected = [];
         $selected['products'] = json_encode($input->products);
-        return view('customer.create', compact(['data','states','products']));
+        return view('customer.create', compact(['data', 'states', 'products']));
     }
 
     /**
@@ -137,8 +144,8 @@ class CustomersController extends Controller
             'dispatcher_note' => 'required|max:255'
         ]);
 
-        $update_req = customer::where('id',$id)->firstOrFail();
-        
+        $update_req = customer::where('id', $id)->firstOrFail();
+
         $update_req->fullname = $request->fullname;
         $update_req->customer_email = $request->customer_email;
         $update_req->phone_number = $request->phone_number;
@@ -150,12 +157,11 @@ class CustomersController extends Controller
         $update_req->total_cost_of_products = $request->total_cost_of_products;
         $update_req->customer_address = $request->customer_address;
         $update_req->dispatcher_note = $request->dispatcher_note;
-        
+
 
         $update_req->save();
         //dd($request->all());
         return redirect()->route('customers.list');
-
     }
 
     /**
@@ -166,7 +172,7 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        $del_req = customer::where('id',$id)->firstOrFail();
+        $del_req = customer::where('id', $id)->firstOrFail();
         $del_req->delete();
         return redirect()->route('customers.list');
     }
@@ -175,9 +181,51 @@ class CustomersController extends Controller
     {
         $timestamp = mt_rand(1, time());
 
-//Format that timestamp into a readable date string.
-$randomDate = date("d M Y", $timestamp);
-        $andom = date("Ym").random_int(10,50);
+        //Format that timestamp into a readable date string.
+        $randomDate = date("d M Y", $timestamp);
+        $andom = date("Ym") . random_int(10, 50);
         return $andom;
+    }
+
+    public function notify (Request $request, $id) 
+    {
+        $data = customer::where('id', $id)->first();
+        if(!empty($request->email_notification))
+        {
+            Notification::route('mail', [$request->customer_email])
+        ->notify(new PushBoardcast($data));
+        }
+
+        if(!empty($request->sms_notification))
+        {
+           // push sms
+        }
+        
+        return redirect()->route('customers.notify', $id);
+    }
+
+    public function sum($arr)
+    {
+        $sum = 0;
+
+        foreach ($arr->products as $num => $values) {
+            $sum += $values['px'];
+        }
+
+        return $sum;
+    }
+
+    public function sendMail($req, $data)
+    {
+        if(!empty($req->customer_email))
+        {
+            
+             Notification::route('mail', [$req->customer_email => $req->fullname])->notify(new PushBoardcast($data));
+            
+        }
+
+        // User::chunk(10, function($users){
+        //     Notification::route('mail', [$req->customer_email => $req->fullname])->notify(new PushBoardcast($data));
+        // });
     }
 }

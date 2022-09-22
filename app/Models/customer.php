@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class customer extends Model
 {
-   
+    use Notifiable;
+
+    protected $casts = [
+        'products' => 'array'
+    ];
 
     protected $fillable = [
         'fullname',
@@ -23,6 +28,8 @@ class customer extends Model
         'customer_email',
         'invoice_number'
     ];
+
+
 
         /**
 
@@ -47,12 +54,8 @@ class customer extends Model
 
      */
 
-    public function getProductsAttribute($value)
 
-    {
-
-        return $this->attributes['products'] = json_decode($value);
-
-    }
     use HasFactory;
+
+    
 }

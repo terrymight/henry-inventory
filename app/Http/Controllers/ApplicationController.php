@@ -15,11 +15,12 @@ class ApplicationController extends Controller
     public function index()
     {
         $datas = Application::firstOrCreate([
-            'company_name' => 'INVENTORY',
-            'phone' => '08060342043',
+            'company_name' => 'SKY HIGH DIGITAL LAB LTD',
+            'orders' => 'BUSINESS NAME REGISTRATION NO. 3728995',
+            'phone' => '2347010199700',
             'email' => 'info@gmail.com',
             'address' => 'ASEMANKSE STREET WUSE ZONE 2, ABUJA NIGERIA'
-        ])->get();
+        ])->where('id', 1)->get();
         return view('application.index', compact('datas'));
     }
 
@@ -76,19 +77,23 @@ class ApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        info($id);
         $this->validate($request, [
             'company_name' => 'required|max:255',
             'phone' => 'required|max:255',
             'address' => 'required|max:255',
             'email' => 'required|max:255',
         ]);
-        $req_data = Application::where('id',$id)->firstOrFail();
-        $req_data->company_name = $request->company_name;
-        $req_data->phone = $request->phone;
-        $req_data->phone_sec = $request->phone_sec;
-        $req_data->address = $request->address;
-        $req_data->email = $request->email;
-        $req_data->save();
+
+        Application::where('id',$id)
+        ->update([
+            'company_name' => $request->company_name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'phone_sec' => $request->phone_sec,
+            'orders' => $request->orders,
+        ]);
 
         return redirect('application/list');
     }

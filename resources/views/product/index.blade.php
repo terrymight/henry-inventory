@@ -81,10 +81,13 @@
                     </td>
                   </tr>
                   @endforeach
-                  <th>Products Name</th>
-                  <th></th>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Products Name</th>
+                    <th></th>
                   </tr>
-                  </tfoot>
+                </tfoot>
               </table>
             </div>
             <!-- Delete Modal -->

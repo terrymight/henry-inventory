@@ -18,6 +18,7 @@ class Application extends Model
         'phone',
         'phone_sec',
         'email',
+        'orders',
     ];
 
         /**

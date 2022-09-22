@@ -77,7 +77,7 @@
                     <td>{{ $data->phone_number }}</td>
                     <td>
                       @foreach ($data->products as $product)
-                      <li>{{ $product }}</li>
+                      <li>{{ $product['pro'] }}</li>
                       @endforeach
                     </td>
                     <td>{{ $data->customer_state }}</td>
