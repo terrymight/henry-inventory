@@ -20,7 +20,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 
-Route::get('/', [App\Http\Controllers\InvoiceController::class,'index']);
+Route::get('/', [App\Http\Controllers\InvoiceController::class,'index'])->name('invoice.index');
 Route::post('/find-invoice', [App\Http\Controllers\InvoiceController::class,'store']);
 // Route::get('/find-invoice', [App\Http\Controllers\InvoiceController::class,'store']);
 
@@ -60,6 +60,6 @@ Route::post('products/store', [App\Http\Controllers\ProductsController::class,'s
 Route::get('products/{id}/edit', [App\Http\Controllers\ProductsController::class,'edit'])->middleware(['auth']);
 Route::put('products/{id}', [App\Http\Controllers\ProductsController::class,'update'])->middleware(['auth']);
 
-Route::get('sms-settings', [App\Http\Controllers\SmsController::class,'index'])->middleware(['auth']);
-
+Route::get('sms-settings', [App\Http\Controllers\SmsController::class,'index'])->middleware(['auth'])->name('sms.index');
+Route::post('sms-settings', [App\Http\Controllers\SmsController::class,'send'])->middleware(['auth']);
 require __DIR__.'/auth.php';

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Sms\Ebulksms;
+use App\Http\Sms\Whispersms;
 use App\Models\Application;
 use App\Models\customer;
 use App\Models\Dispatcher;
@@ -136,10 +138,8 @@ class CustomersController extends Controller
             'fullname' => 'required|max:255',
             'phone_number' => 'required|max:255',
             'customer_state' => 'required|max:255',
-            'dispatcher_id' => 'required|max:255',
             'products' => 'required|max:255',
             'date_of_delivery' => 'required|max:255',
-            'total_cost_of_products' => 'required|max:255',
             'customer_address' => 'required|max:255',
             'dispatcher_note' => 'required|max:255'
         ]);
@@ -151,16 +151,15 @@ class CustomersController extends Controller
         $update_req->phone_number = $request->phone_number;
         $update_req->whatsapp_number = $request->whatsapp_number;
         $update_req->customer_state = $request->customer_state;
-        $update_req->dispatcher_id = 1;
+        $update_req->dispatcher_id = $request->customer_state;
         $update_req->products = $request->products;
         $update_req->date_of_delivery = $request->date_of_delivery;
-        $update_req->total_cost_of_products = $request->total_cost_of_products;
+        $update_req->total_cost_of_products = $this->sum($request);
         $update_req->customer_address = $request->customer_address;
         $update_req->dispatcher_note = $request->dispatcher_note;
 
 
         $update_req->save();
-        //dd($request->all());
         return redirect()->route('customers.list');
     }
 
@@ -189,16 +188,19 @@ class CustomersController extends Controller
 
     public function notify (Request $request, $id) 
     {
+        
         $data = customer::where('id', $id)->first();
         if(!empty($request->email_notification))
         {
+           
             Notification::route('mail', [$request->customer_email])
         ->notify(new PushBoardcast($data));
         }
 
         if(!empty($request->sms_notification))
         {
-           // push sms
+           // info($request->phone_number);
+           $this->sendSms($request);
         }
         
         return redirect()->route('customers.notify', $id);
@@ -215,7 +217,7 @@ class CustomersController extends Controller
         return $sum;
     }
 
-    public function sendMail($req, $data)
+    private function sendMail($req, $data)
     {
         if(!empty($req->customer_email))
         {
@@ -227,5 +229,13 @@ class CustomersController extends Controller
         // User::chunk(10, function($users){
         //     Notification::route('mail', [$req->customer_email => $req->fullname])->notify(new PushBoardcast($data));
         // });
+    }
+
+    private function sendSms($req)
+    {
+        $smsBody = 'Hello '.$req->fullname .' '.'Your invoice is ready you can view  invoice no. '. $req->invoice_number .' ' . env('APP_URL');
+        
+        $sendSms = new Whispersms();
+        $sendSms->sendSms('invoice sent',$smsBody, $req->phone_number);
     }
 }
