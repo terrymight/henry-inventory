@@ -21,6 +21,9 @@
       <a href="../../index2.html" class="h1"><b>{{ config('app.name') }}</b></a>
     </div>
     <div class="card-body">
+      @if(session()->has('err'))
+      <p class="alert alert-danger">{{ Session::get('err') }}</p>
+      @endif
       <p class="login-box-msg">Here you can easily retrieve a Invocie.</p>
       <form action="{{ url('find-invoice') }}" method="post">
       @csrf

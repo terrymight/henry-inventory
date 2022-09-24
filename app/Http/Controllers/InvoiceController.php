@@ -36,15 +36,14 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $data = customer::where('invoice_number',$request->id)->first();
-        
-        // if($data->count()){
-        //     $application = Application::where('id', 1)->first();
-        //     return view('invoice.show', compact('data','application'));
-        // }
-        $application = Application::where('id', 1)->first();
-        return view('invoice.show', compact('data','application'));
+
+        $data = customer::where('invoice_number', $request->id)->first();
+
+        if (!empty($data)) {
+            $application = Application::where('id', 1)->first();
+            return view('invoice.show', compact('data', 'application'));
+        }
+        return redirect()->route('invoice.index')->with('err', 'Invoice not found in the system!!');
     }
 
     /**
@@ -66,7 +65,6 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
-        
     }
 
     /**

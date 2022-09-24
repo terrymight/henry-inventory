@@ -149,6 +149,8 @@
                     <label for="email_notification" class="custom-control-label">Send Email?</label>
                   </div>
                   <div class="custom-control custom-checkbox">
+                  <input type="hidden" value="{{ $data->invoice_number }}" name="invoice_number">
+                  <input type="hidden" value="{{ $data->fullname }}" name="fullname">
                     <input type="hidden" value="{{ $data->phone_number }}" name="phone_number">
                     <input value="sms_notification" name="sms_notification" class="custom-control-input custom-control-input-danger" type="checkbox" id="sms_notification">
                     <label for="sms_notification" class="custom-control-label">Send SMS?</label>
