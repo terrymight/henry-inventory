@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('date_of_delivery');
             $table->text('total_cost_of_products');
             $table->char('dispatcher_id', 200);
+            $table->char('user_id', 200);
             $table->string('products_status')->default('not processed');
             $table->text('dispatcher_note');
             $table->json('products');

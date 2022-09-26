@@ -22,7 +22,16 @@
     </div><!-- /.container-fluid -->
   </div>
   <!-- /.content-header -->
-
+  @if(!is_null($err))
+  <div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>
+      
+      {{ $err }}
+      
+    </strong>
+  </div>
+  @endif
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
@@ -102,9 +111,20 @@
             <div class="row">
               <!-- accepted payments column -->
               <div class="col-6">
-                <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                  Note {{ $data->dispatcher_note }}
+                @foreach ($data->comments as $item)
+                <form method="post" action="{{ url('customer/comment/destroy/'.$item->id.'/'.$data->id) }}">
+                  @method('delete')
+                  @csrf
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    <ul>
+                      <li><a href="{{ url('customer/comment/destroy/'.$item->id.'/'.$data->id) }}">Delete</a> {{ $item->comments_name }} (Posted by {{ $item->created_at }})</li>
+                      
+                    </ul>
+                  @endforeach
+                </form>
+                  <a href="{{ url('/comment/create/'.$data->id) }}">Add Comments</a>
                 </p>
+                </form>
                 <p class="lead">Product Current Status:</p>
                 <p class="lead">
                   @if( $data->products_status == 'not processed' )
@@ -119,6 +139,30 @@
                   <span class="badge bg-danger">{{ $data->products_status }}</span>
                   @endif
                 </p>
+                <form method="POST" action=" {{ url('/comment/update/status') }}">
+                  @csrf
+                <p class="lead">Change status:</p>
+                <br>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <select name="products_status" id="">
+                        <option value="delivered">Delivered</option>
+                        <option value="processed">Processed</option>
+                        <option value="rescheduled">Rescheduled</option>
+                        <option value="not processed">Not Processed</option>
+                        <option value="canceled">Canceled</option>                  
+                      </select>
+                      <input type="hidden" name="customer_id" value="{{ $data->id }}">
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-primary float-left"> Save
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+                </form>
               </div>
               <!-- /.col -->
               <div class="col-6">
@@ -132,6 +176,8 @@
                   </table>
                 </div>
               </div>
+
+              
               <!-- /.col -->
             </div>
             <!-- /.row -->

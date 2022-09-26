@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use App\Models\User;
-use Encore\Admin\Form\Field\Display;
 use Illuminate\Support\Facades\Hash;
 use App\Models\DispatcherState;
 use App\Models\state;
@@ -25,6 +24,7 @@ class UserController extends Controller
          $datas = DB::table('users')
             ->join('permissions', 'users.id', '=', 'permissions.user_id')
             ->select('users.*', 'permissions.phone','permissions.active')
+            ->where('permissions.permission_id', 2)
             ->get();
         return view('user.index', ['datas' => $datas]);
     }
@@ -48,6 +48,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        info($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

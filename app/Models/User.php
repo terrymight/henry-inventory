@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_permission',
     ];
 
     /**
@@ -47,4 +48,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the permission associated with the user.
+     */
+    public function permission()
+    {
+        return $this->hasOne(Permission::class);
+    }
+
+
 }

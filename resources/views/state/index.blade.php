@@ -99,7 +99,6 @@
               @isset ($data->id)
                 <form method="POST" action="{{  url('state/destroy/'. $data->id) }}">
                   @method('DELETE')
-
                   @csrf
 
                   <div class="modal-content">

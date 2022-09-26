@@ -26,7 +26,8 @@ class customer extends Model
         'customer_address',
         'dispatcher_note',
         'customer_email',
-        'invoice_number'
+        'invoice_number',
+        'user_id'
     ];
 
 
@@ -46,15 +47,11 @@ class customer extends Model
         $this->attributes['products'] = json_encode($value);
 
     }
-        /**
 
-     * Get the Products
-
-     *
-
-     */
-
-
+    public function comments ()
+    {
+        return $this->hasMany(Comments::class, 'invoice_id', 'id');
+    }
     use HasFactory;
 
     

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Sms\Ebulksms;
+
 use App\Http\Sms\Whispersms;
 use App\Models\Application;
 use App\Models\customer;
-use App\Models\Dispatcher;
-use App\Models\DispatcherState;
+use App\Models\Comments;
 use App\Models\Product;
 use App\Models\state;
 use App\Models\User;
@@ -15,6 +14,9 @@ use App\Notifications\PushBoardcast;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth;
+
+use function Ramsey\Uuid\v1;
 
 class CustomersController extends Controller
 {
@@ -25,9 +27,29 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        
-        $datas = customer::all()->sortBy('id');
-        
+       if(Auth::user()->role_permission == 2)
+       {
+        $datas = customer::addSelect(
+            ['owned_by' => User::select('name')
+            ->whereColumn('id', 'customers.user_id')]
+            )
+            ->addSelect(
+                ['customer_state' => state::select('name')
+                ->whereColumn('customer_state', 'states.id')]
+            )->get();
+       }elseif(Auth::user()->role_permission == 3){
+        $datas =null;
+       }else{
+        $datas = customer::addSelect(
+            ['owned_by' => User::select('name')
+            ->whereColumn('id', 'customers.user_id')]
+            )
+            ->addSelect(
+                ['customer_state' => state::select('name')
+                ->whereColumn('customer_state', 'states.id')]
+            )->get();
+        }
+       // dd($datas);
         return view('customer.index', compact('datas'));
     }
 
@@ -60,12 +82,12 @@ class CustomersController extends Controller
         // Validate the request...
         $this->validate($request, [
             'fullname' => 'required|max:255',
-            'phone_number' => 'required|max:255',
+            'phone_number' => 'required|max:255', 'unique:customers',
             'customer_state' => 'required|max:255',
             'products' => 'required|max:255',
             'date_of_delivery' => 'required|max:255',
             'customer_address' => 'required|max:255',
-            'dispatcher_note' => 'required|max:255'
+            'dispatcher_note' => 'required|max:255',
         ]);
 
         $data = customer::create([
@@ -78,17 +100,13 @@ class CustomersController extends Controller
             'customer_address' => $request->customer_address,
             'dispatcher_note' => $request->dispatcher_note,
             'dispatcher_id' => $request->customer_state,
+            'user_id' => Auth::user()->id,
             'customer_email' => $request->customer_email,
             'invoice_number' => $this->set_invoice(),
         ]);
 
-        /**
-         * sends user invoice using the 
-         * customoer infor
-         * @param $request $data
-         */
-        $this->sendMail($request, $data);
         return redirect('/customers/list');
+        
     }
 
     /**
@@ -97,11 +115,15 @@ class CustomersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $data = customer::where('id', $id)->first();
+
+        $err = $request->input('err');
+
+        $data = customer::find($id);
+
         $application = Application::where('id', 1)->first();
-        return view('customer.show', compact('data', 'application'));
+        return view('customer.show', compact('data', 'application', 'err'));
     }
 
     /**
@@ -176,6 +198,14 @@ class CustomersController extends Controller
         return redirect()->route('customers.list');
     }
 
+    public function commentDestroy ($id,$user_id)
+    {
+        //dd('first :'.$id. 'Second :'.$user_id);
+        comments::where('id', $id)->delete();
+        return redirect('customer/show/'.$user_id);
+        // return redirect()->route('customers.notify', [$user_id]);
+    }
+
     public function set_invoice()
     {
         $timestamp = mt_rand(1, time());
@@ -190,6 +220,13 @@ class CustomersController extends Controller
     {
         
         $data = customer::where('id', $id)->first();
+        if($data->customer_email == null ){
+        
+            $err = 'No e-mail on Customer invoice';
+            
+            return redirect()->route('customers.notify', compact(['err','id']));
+        
+        }
         if(!empty($request->email_notification))
         {
            
@@ -202,8 +239,8 @@ class CustomersController extends Controller
            // info($request->phone_number);
            $this->sendSms($request);
         }
-        
-        return redirect()->route('customers.notify', $id);
+        $err = 'Invoice sent successfully';
+        return redirect()->route('customers.notify', compact(['id','err']));
     }
 
     public function sum($arr)
@@ -217,13 +254,50 @@ class CustomersController extends Controller
         return $sum;
     }
 
+    public function storeComment (Request $request) 
+    {
+        $request->validate([
+            'comments_name' => 'required|max:255',
+        ]);
+        Comments::create([
+            'comments_name' => $request->comments_name,
+            'invoice_id' => $request->invoice_id,
+        ]);
+        $err = "Comment added to Invoice";
+        return redirect('customer/show/'.$request->invoice_id)->with('err', $err);
+    }
+
+    public function createComment ($invoice_id)
+    {
+        $data = null;
+        if(!$invoice_id){
+            return view('comments.create', compact(['data','invoice_id']));
+        }
+        $err = 'something want wrong with request, try again';
+        return view('comments.create', compact(['err','data','invoice_id']));
+    }
+
+    public function changeStatus (Request $request)
+    {
+        $item = customer::where('id', $request->customer_id)->first();
+        $item->products_status = $request->products_status;        
+        $item->save();
+
+        $err = "Invoice Status updated";
+        return redirect('customer/show/'.$request->customer_id)->with('err', $err);
+
+    }
+
     private function sendMail($req, $data)
     {
         if(!empty($req->customer_email))
         {
             
              Notification::route('mail', [$req->customer_email => $req->fullname])->notify(new PushBoardcast($data));
+             return true;
             
+        }else{
+            return false;
         }
 
         // User::chunk(10, function($users){
