@@ -36,6 +36,14 @@ Route::post('customer/notification/{id}', [App\Http\Controllers\CustomersControl
 Route::post('customer/store', [App\Http\Controllers\CustomersController::class,'store'])->middleware(['auth'])->name('customer/store');
 Route::delete('customer/destroy/{id}', [App\Http\Controllers\CustomersController::class,'destroy'])->middleware(['auth'])->name('customer.destroy');
 Route::get('customer/show/{id}', [App\Http\Controllers\CustomersController::class,'show'])->middleware(['auth'])->name('customers.notify');
+Route::get('customer/comment/destroy/{id}/{user_id}', [App\Http\Controllers\CustomersController::class,'commentDestroy'])->middleware(['auth'])->name('comment.destroy');
+
+Route::get('/comment/create/{id}', [App\Http\Controllers\CustomersController::class,'createComment'])->middleware(['auth']);
+Route::post('/comment/store', [App\Http\Controllers\CustomersController::class,'storeComment'])->middleware(['auth']);
+
+// changeStatus
+Route::post('/comment/update/status', [App\Http\Controllers\CustomersController::class,'changeStatus'])->middleware(['auth']);
+
 
 Route::get('state/list', [App\Http\Controllers\StateController::class,'index'])->middleware(['auth']);
 Route::get('state/create', [App\Http\Controllers\StateController::class,'create'])->middleware(['auth']);
@@ -63,3 +71,11 @@ Route::put('products/{id}', [App\Http\Controllers\ProductsController::class,'upd
 Route::get('sms-settings', [App\Http\Controllers\SmsController::class,'index'])->middleware(['auth'])->name('sms.index');
 Route::post('sms-settings', [App\Http\Controllers\SmsController::class,'send'])->middleware(['auth']);
 require __DIR__.'/auth.php';
+
+Route::get('staff/list', [App\Http\Controllers\StaffController::class,'index'])->middleware(['auth'])->name('staff/list');
+Route::get('staff/create', [App\Http\Controllers\StaffController::class,'create'])->middleware(['auth']);
+Route::get('staff/{id}/edit', [App\Http\Controllers\StaffController::class,'edit'])->middleware(['auth']);
+Route::put('staff/{id}', [App\Http\Controllers\StaffController::class,'update'])->middleware(['auth']);
+Route::delete('staff/destroy/{id}', [App\Http\Controllers\StaffController::class,'destroy'])->middleware(['auth'])->name('staff.destroy');
+Route::post('staff/store', [App\Http\Controllers\StaffController::class,'store'])->middleware(['auth'])->name('staff/store');
+

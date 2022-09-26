@@ -14,4 +14,12 @@ class Permission extends Model
         'phone'
     ];
     use HasFactory;
+
+    /**
+     * Get the user that owns the phone.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -78,7 +78,16 @@
                <a href="{{ url('users/list') }}" class="nav-link">
                  <i class="nav-icon fas fa-user-alt"></i>
                  <p>
-                   Manage Dispatcher/Users
+                   Manage All Dispatcher
+                 </p>
+               </a>
+             </li>
+
+             <li class="nav-item">
+               <a href="{{ url('staff/list') }}" class="nav-link">
+                 <i class="nav-icon fas fa-user-cog"></i>
+                 <p>
+                   Manage All Staff
                  </p>
                </a>
              </li>

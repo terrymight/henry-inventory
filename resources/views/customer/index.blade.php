@@ -65,11 +65,13 @@
                     <th >Product (s)</th>
                     <th >State</th>
                     <th >Price</th>
+                    <th >Owned by </th>
                     <th >Status</th>
                     <th class="col-2"></th>
                   </tr>
                 </thead>
                 <tbody>
+                  @if ($datas != null)
                   @foreach ($datas as $data)
                   <tr>
                     <td>{{ $data->invoice_number }}</td>
@@ -82,6 +84,7 @@
                     </td>
                     <td>{{ $data->customer_state }}</td>
                     <td>{{ $data->total_cost_of_products }}</td>
+                    <td>{{ $data->owned_by }}</td>
                     @if( $data->products_status == 'not processed' )
                     <td>
                       <span class="badge bg-primary">{{ $data->products_status }}</span>
@@ -118,6 +121,7 @@
                       </td>
                   </tr>
                   @endforeach
+                @endif
                 </tbody>
                 <tfoot>
                   <tr>
@@ -127,6 +131,7 @@
                     <th>Product (s)</th>
                     <th>State</th>
                     <th>Price</th>
+                    <th >Owned by </th>
                     <th>Status</th>
                     <th class="col-md-6"></th>
                   </tr>
