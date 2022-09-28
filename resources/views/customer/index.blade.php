@@ -30,6 +30,7 @@
         <div class="col-sm-6">
           <h1 class="m-0"></h1>
         </div><!-- /.col -->
+        @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 3 )
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <a href="{{ url('customer/create') }}">
@@ -37,7 +38,7 @@
             </a>
           </ol>
         </div><!-- /.col -->
-
+        @endif
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </div>
@@ -65,7 +66,9 @@
                     <th >Product (s)</th>
                     <th >State</th>
                     <th >Price</th>
+                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
                     <th >Owned by </th>
+                    @endif
                     <th >Status</th>
                     <th class="col-2"></th>
                   </tr>
@@ -84,7 +87,9 @@
                     </td>
                     <td>{{ $data->customer_state }}</td>
                     <td>{{ $data->total_cost_of_products }}</td>
+                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
                     <td>{{ $data->owned_by }}</td>
+                    @endif
                     @if( $data->products_status == 'not processed' )
                     <td>
                       <span class="badge bg-primary">{{ $data->products_status }}</span>
@@ -106,7 +111,7 @@
                           </i>
                           View
                         </a>
-                        @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
+                        @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 3 )
                         <a class="btn btn-info btn-sm" href="{{ url('customer/'.$data->id.'/edit') }}">
                           <i class="fas fa-pencil-alt">
                           </i>
@@ -131,7 +136,9 @@
                     <th>Product (s)</th>
                     <th>State</th>
                     <th>Price</th>
+                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
                     <th >Owned by </th>
+                    @endif
                     <th>Status</th>
                     <th class="col-md-6"></th>
                   </tr>

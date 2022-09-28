@@ -69,7 +69,7 @@ class StaffController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('staff.list');
+        return redirect('staff/list');
     }
 
     /**

@@ -76,9 +76,11 @@
                                 <!-- /.form-group -->
                                 <div class="form-group">
                                     <label>Select State</label>
+                                    
                                     <select class="form-control select2bs4" style="width: 100%;" name="customer_state" id="customer_state">
                                         @foreach($states as $state)
-                                        <option value="{{ $state->state_id }}" @selected(old('customer_state')==$state->state_name)>
+                                        
+                                        <option value="[{{ $state->state_id }},{{ $state->user_id }}]" @selected(old('state_name')==$state->state_name)>
                                             {{ $state->state_name }}
                                         </option>
                                         @endforeach
@@ -109,8 +111,7 @@
                                 <!-- /.form-group -->
                                 <div class="form-group">
                                     <label>Address : </label>
-                                    <textarea name="customer_address" id="customer_address" class="form-control" rows="3" placeholder="Enter customer address..." required>{{ old('customer_address', $data->customer_address) }}
-                                    </textarea>
+                                    <textarea name="customer_address" id="customer_address" class="form-control" rows="3" placeholder="Enter customer address..." required>{{ old('customer_address', $data->customer_address) }}</textarea>
                                 </div>
                             </div>
 
@@ -119,8 +120,7 @@
 
                                 <div class="form-group">
                                     <label>Note : </label>
-                                    <textarea name="dispatcher_note" id="dispatcher_note" class="form-control" rows="3" placeholder="Enter Dispatcher note...">{{ old('dispatcher_note', $data->dispatcher_note) }}
-                                    </textarea>
+                                    <textarea name="dispatcher_note" id="dispatcher_note" class="form-control" rows="3" placeholder="Enter Dispatcher note...">{{ old('dispatcher_note', $data->dispatcher_note) }}</textarea>
                                 </div>
 
                             </div>
