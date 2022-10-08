@@ -83,7 +83,10 @@ class UserController extends Controller
 
     public function storeState(Request $request) 
     {
-        
+        $request->validate([
+            'state_id' => 'unique:dispatcher_state',
+            
+        ]);
         DispatcherState::create([
             'user_id' => $request->user_id,
             'state_id' => $request->state_id
@@ -110,7 +113,7 @@ class UserController extends Controller
         ->join('states', 'states.id', '=', 'dispatcher_state.state_id')
         ->join('users', 'users.id', '=', 'dispatcher_state.user_id')
         ->where('users.id', $id)
-        ->select('states.id', 'states.name as state_name')
+        ->select('dispatcher_state.id as dispatcher_id', 'states.id', 'states.name as state_name')
         ->get();
 
 
@@ -171,8 +174,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        User::where('id', $request->delete_id)->delete();
+        Permission::where('user_id', $request->delete_id)->delete();
+        DispatcherState::where('user_id', $request->delete_id)->delete();
+        return redirect('users/list');
     }
+
+    public function removeDispatcher (Request $request)
+    {
+        DispatcherState::where('id', $request->delete_id)->delete();
+        return redirect('users/list');
+    }
+
 }

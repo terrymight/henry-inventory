@@ -202,7 +202,7 @@
                     <label for="sms_notification" class="custom-control-label">Send SMS?</label>
                   </div>
 
-                  @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
+                  @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 3 )
                   <button type="submit" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Send Invoice
                   </button>
                   @endif

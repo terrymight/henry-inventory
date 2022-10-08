@@ -30,7 +30,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <a href="{{ url('staff/create') }}">
-                            <button class="btn btn-primary">add Staff</button>
+                            <button class="btn btn-primary">Create New Staff</button>
                         </a>
                     </ol>
                 </div><!-- /.col -->
@@ -87,11 +87,13 @@
                                                 </i>
                                                 Edit
                                             </a>
-                                            <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteState">
+                                            {{-- <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteState">
                                                 <i class="fas fa-trash">
                                                 </i>
                                                 Delete
-                                            </a>
+                                            </a> --}}
+
+                                            <button value="{{ $data->id }}" class="btn btn-danger btn-sm deleteDataBtn" type="button"><i class="fas fa-trash"></i>Delete</button>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -107,46 +109,6 @@
                                     </tfoot>
                             </table>
                         </div>
-                        <!-- Delete Modal -->
-                        <div class="modal fade" id="deleteState" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteState" aria-hidden="true">
-                            <div class="modal-dialog modal-sm" role="document">
-
-                                <form method="POST" action="{{  url('staff/destroy/'. 1) }}">
-                                    @method('DELETE')
-
-                                    @csrf
-
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">This action is not reversible.</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete ?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                            </div>
-                        </div>
-
-                        @section('script')
-                        <script>
-                            $('#deleteState').on('show.bs.modal', function(event) {
-                                var button = $(event.relatedTarget);
-                                var action = button.data('action');
-                                var modal = $(this);
-                                modal.find('form').attr('action', action);
-                            });
-                        </script>
-                        @endsection
-                        <!-- /.Delete Modal -->
                         <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
@@ -160,7 +122,48 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteState" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      @isset ($data->id)
+      <form method="POST" action="{{  url('users/destroy') }}">
+     
+        @csrf
 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">This action is not reversible.</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="delete_id" id="delete_id">
+            Are you sure you want to delete ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </form>
+      @endisset
+    </div>
+  </div>
+  <!-- /.Delete Modal -->
 
 
 @include('customer.partials.footer')
+
+<script>
+    $( document ).ready(function() {
+      $('.deleteDataBtn').click(function(e){
+        e.preventDefault();
+  
+        var data_id = $(this).val();
+        $('#delete_id').val(data_id);
+  
+        $('#deleteModal').modal('show');
+      });
+    });  
+  </script>

@@ -69,7 +69,7 @@ class StaffController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('staff.list');
+        return redirect('staff/list');
     }
 
     /**
@@ -112,8 +112,10 @@ class StaffController extends Controller
      * @param  \App\Models\Staff  $staff
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        User::where('id', $request->delete_id )->delete();
+        Permission::where('user_id', $request->delete_id )->delete();
+        return redirect('staff/list');
     }
 }

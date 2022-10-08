@@ -27,7 +27,7 @@ return new class extends Migration
             $table->char('dispatcher_id', 200);
             $table->char('user_id', 200);
             $table->string('products_status')->default('not processed');
-            $table->text('dispatcher_note');
+            $table->text('dispatcher_note')->nullable();
             $table->json('products');
             $table->timestamps();
         });

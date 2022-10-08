@@ -9,12 +9,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">User List</h1>
+          <h1 class="m-0">Dispatcher List</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">User List</li>
+            <li class="breadcrumb-item active">Dispatcher List</li>
           </ol>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -30,7 +30,7 @@
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <a href="{{ url('users/create') }}">
-              <button class="btn btn-primary">add dispatcher</button>
+              <button class="btn btn-primary">Create New Dispatcher</button>
             </a>
           </ol>
         </div><!-- /.col -->
@@ -46,7 +46,7 @@
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">State with default Headers</h3>
+              <h3 class="card-title">Dispatcher`s with default Headers</h3>
 
             </div>
             <!-- /.card-header -->
@@ -87,14 +87,18 @@
                         </i>
                         Edit
                       </a>
-                      <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteState">
+                      {{-- <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteState">
                         <i class="fas fa-trash">
                         </i>
                         Delete
-                      </a>
+                      </a> --}}
+                      <button value="{{ $data->id }}" class="btn btn-danger btn-sm deleteDataBtn" type="button"><i class="fas fa-trash"></i>Delete</button>
                     </td>
                   </tr>
                   @endforeach
+                </tbody>
+                  <tfoot>
+                  <tr>
                   <th>Dispatcher Name</th>
                   <th>Phone Number</th>
                   <th>Dispatcher State (s)</th>
@@ -105,12 +109,11 @@
               </table>
             </div>
             <!-- Delete Modal -->
-            <div class="modal fade" id="deleteState" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteState" aria-hidden="true">
+            <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteState" aria-hidden="true">
               <div class="modal-dialog modal-sm" role="document">
                 @isset ($data->id)
-                <form method="POST" action="{{  url('users/destroy/'. $data->id) }}">
-                  @method('DELETE')
-
+                <form method="POST" action="{{  url('users/destroy') }}">
+               
                   @csrf
 
                   <div class="modal-content">
@@ -121,7 +124,8 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      Are you sure you want to delete {{ $data->name }} ?
+                      <input type="hidden" name="delete_id" id="delete_id">
+                      Are you sure you want to delete ?
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
@@ -132,17 +136,6 @@
                 @endisset
               </div>
             </div>
-
-            @section('script')
-            <script>
-              $('#deleteState').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget);
-                var action = button.data('action');
-                var modal = $(this);
-                modal.find('form').attr('action', action);
-              });
-            </script>
-            @endsection
             <!-- /.Delete Modal -->
             <!-- /.card-body -->
           </div>
@@ -161,3 +154,16 @@
 
 
 @include('customer.partials.footer')
+
+<script>
+  $( document ).ready(function() {
+    $('.deleteDataBtn').click(function(e){
+      e.preventDefault();
+
+      var data_id = $(this).val();
+      $('#delete_id').val(data_id);
+
+      $('#deleteModal').modal('show');
+    });
+  });  
+</script>

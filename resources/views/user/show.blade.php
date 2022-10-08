@@ -109,8 +109,8 @@
               <td>{{ $covered->state_name }}</td>          
                 <td class="text-right py-0 align-middle">
                   <div class="btn-group btn-group-sm">
-                    <a href="#" class="btn btn-info"><i class="fas fa-edit"></i></a>
-                    <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    <button value="{{ $covered->dispatcher_id }}" class="btn btn-danger btn-sm deleteDataBtn" type="button">&nbsp;Delete&nbsp;<i class="fas fa-trash"></i></button>
+
                   </div>
                 </td>
               </tr>
@@ -129,6 +129,47 @@
 </div>
 <!-- /.content-wrapper -->
 
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteState" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+  @isset ($data->id)
+    <form method="POST" action="{{  url('dispatcher/destroy') }}">
+      @method('POST')
+      @csrf
 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">This action is not reversible.</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="delete_id" id="delete_id">
+          
+          Are you sure you want to delete  ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </form>
+    @endisset
+  </div>
+</div>
+<!-- /.Delete Modal -->
 
 @include('customer.partials.footer')
+<script>
+  $( document ).ready(function() {
+    $('.deleteDataBtn').click(function(e){
+      e.preventDefault();
+
+      var data_id = $(this).val();
+      $('#delete_id').val(data_id);
+
+      $('#deleteModal').modal('show');
+    });
+  });  
+</script>

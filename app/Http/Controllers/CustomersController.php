@@ -29,16 +29,25 @@ class CustomersController extends Controller
     {
        if(Auth::user()->role_permission == 2)
        {
-        $datas = customer::addSelect(
-            ['owned_by' => User::select('name')
-            ->whereColumn('id', 'customers.user_id')]
-            )
-            ->addSelect(
-                ['customer_state' => state::select('name')
-                ->whereColumn('customer_state', 'states.id')]
-            )->get();
+            $datas = customer::join('states', 'states.id','=','customers.customer_state')
+                    ->join('users', 'users.id', '=','customers.user_id')
+                    ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'customers.customer_state')
+                    ->where('customers.dispatcher_id',Auth::user()->id)
+                    ->get([
+                        'customers.customer_address','customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
+                        'users.name as owned_by',
+                        'states.name as customer_state'
+                    ]);
        }elseif(Auth::user()->role_permission == 3){
-        $datas =null;
+        $datas = customer::join('states', 'states.id','=','customers.customer_state')
+                    ->join('users', 'users.id', '=','customers.user_id')
+                    ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'customers.customer_state')
+                    ->where('customers.user_id',Auth::user()->id)
+                    ->get([
+                        'customers.customer_address','customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
+                        'users.name as owned_by',
+                        'states.name as customer_state'
+                    ]);
        }else{
         $datas = customer::addSelect(
             ['owned_by' => User::select('name')
@@ -63,9 +72,8 @@ class CustomersController extends Controller
 
         $states = DB::table('states')
             ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
-            ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
+            ->select('states.name as state_name', 'dispatcher_state.user_id', 'dispatcher_state.state_id')
             ->get();
-
         $data = new customer;
         return view('customer.create', compact(['data', 'states']));
     }
@@ -87,23 +95,29 @@ class CustomersController extends Controller
             'products' => 'required|max:255',
             'date_of_delivery' => 'required|max:255',
             'customer_address' => 'required|max:255',
-            'dispatcher_note' => 'required|max:255',
         ]);
 
         $data = customer::create([
             'fullname' => $request->fullname,
             'phone_number' => $request->phone_number,
-            'customer_state' => $request->customer_state,
+            'customer_state' => $request->customer_state[1],
             'products' => $request->products,
             'date_of_delivery' => $request->date_of_delivery,
             'total_cost_of_products' => $this->sum($request),
             'customer_address' => $request->customer_address,
             'dispatcher_note' => $request->dispatcher_note,
-            'dispatcher_id' => $request->customer_state,
+            'dispatcher_id' => $request->customer_state[3],
             'user_id' => Auth::user()->id,
             'customer_email' => $request->customer_email,
             'invoice_number' => $this->set_invoice(),
         ]);
+        if(!empty($request->dispatcher_note)){
+            Comments::create([
+                'comments_name' => $request->dispatcher_note,
+                'invoice_id' => $data->id,
+            ]);
+        }
+       
 
         return redirect('/customers/list');
         
@@ -122,7 +136,7 @@ class CustomersController extends Controller
 
         $data = customer::find($id);
 
-        $application = Application::where('id', 1)->first();
+        $application = Application::first();
         return view('customer.show', compact('data', 'application', 'err'));
     }
 
@@ -136,7 +150,7 @@ class CustomersController extends Controller
     {
         $states = DB::table('states')
             ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'states.id')
-            ->select('states.name as state_name', 'dispatcher_state.user_id as state_id')
+            ->select('states.name as state_name', 'dispatcher_state.user_id', 'dispatcher_state.state_id')
             ->get();
         $products = Product::all()->sortBy('id');
         $data = customer::where('id', $id)->firstOrFail();
@@ -155,6 +169,7 @@ class CustomersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         // Validate the request...
         $this->validate($request, [
             'fullname' => 'required|max:255',
@@ -172,8 +187,8 @@ class CustomersController extends Controller
         $update_req->customer_email = $request->customer_email;
         $update_req->phone_number = $request->phone_number;
         $update_req->whatsapp_number = $request->whatsapp_number;
-        $update_req->customer_state = $request->customer_state;
-        $update_req->dispatcher_id = $request->customer_state;
+        $update_req->customer_state = $request->customer_state[1];
+        $update_req->dispatcher_id = $request->customer_state[3];
         $update_req->products = $request->products;
         $update_req->date_of_delivery = $request->date_of_delivery;
         $update_req->total_cost_of_products = $this->sum($request);
@@ -191,10 +206,10 @@ class CustomersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $del_req = customer::where('id', $id)->firstOrFail();
-        $del_req->delete();
+    
+        customer::where('id', $request->delete_id)->delete();
         return redirect()->route('customers.list');
     }
 
