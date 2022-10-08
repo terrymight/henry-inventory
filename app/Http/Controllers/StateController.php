@@ -40,7 +40,7 @@ class StateController extends Controller
     {
         // Validate the request...
         $this->validate($request, [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255', 'unique:states',
         ]);
 
         $state_request = new state;
@@ -97,10 +97,9 @@ class StateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $state = state::where('id',$id)->firstOrFail();
-        $state->delete();
+        state::where('id', $request->delete_id)->delete();
         return redirect('state/list');
     }
 }

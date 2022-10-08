@@ -127,7 +127,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <!-- <button >Submit</button> -->
-                                    <input type="submit" class="btn btn-primary" value="Save Order">
+                                    <input type="submit" class="btn btn-primary" value="Create Order">
                                     
                                     
                                 </div>

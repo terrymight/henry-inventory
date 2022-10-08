@@ -9,12 +9,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Customers List</h1>
+          <h1 class="m-0">Order List</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Customers List</li>
+            <li class="breadcrumb-item active">Customers Order List</li>
 
           </ol>
 
@@ -34,7 +34,7 @@
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <a href="{{ url('customer/create') }}">
-              <button class="btn btn-primary">add customer</button>
+              <button class="btn btn-primary">Create New Order</button>
             </a>
           </ol>
         </div><!-- /.col -->
@@ -66,9 +66,7 @@
                     <th >Product (s)</th>
                     <th >State</th>
                     <th >Price</th>
-                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
-                    <th >Owned by </th>
-                    @endif
+                    <th >Customer Address </th>
                     <th >Status</th>
                     <th class="col-2"></th>
                   </tr>
@@ -87,9 +85,9 @@
                     </td>
                     <td>{{ $data->customer_state }}</td>
                     <td>{{ $data->total_cost_of_products }}</td>
-                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
-                    <td>{{ $data->owned_by }}</td>
-                    @endif
+                    
+                    <td>{{ $data->customer_address }}</td>
+                    
                     @if( $data->products_status == 'not processed' )
                     <td>
                       <span class="badge bg-primary">{{ $data->products_status }}</span>
@@ -117,11 +115,7 @@
                           </i>
                           Edit
                         </a>
-                        <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteCustomer">
-                          <i class="fas fa-trash">
-                          </i>
-                          Delete
-                        </a>
+                        <button value="{{ $data->id }}" class="btn btn-danger btn-sm deleteDataBtn" type="button"><i class="fas fa-trash"></i>Delete</button>
                         @endif
                       </td>
                   </tr>
@@ -136,9 +130,7 @@
                     <th>Product (s)</th>
                     <th>State</th>
                     <th>Price</th>
-                    @if(Auth::user()->role_permission == 1 || Auth::user()->role_permission == 2 )
-                    <th >Owned by </th>
-                    @endif
+                    <th >Customer Address </th> 
                     <th>Status</th>
                     <th class="col-md-6"></th>
                   </tr>
@@ -147,12 +139,10 @@
             </div>
             <!-- /.card-body -->
             <!-- Delete Modal -->
-            <div class="modal fade" id="deleteCustomer" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteCustomer" aria-hidden="true">
+            <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteCustomer" aria-hidden="true">
               <div class="modal-dialog modal-sm" role="document">
                 @isset ($data->id)
-                <form method="POST" action="{{  url('customer/destroy/'. $data->id) }}">
-                  @method('DELETE')
-
+                <form method="POST" action="{{  url('customer/destroy') }}">
                   @csrf
 
                   <div class="modal-content">
@@ -163,7 +153,8 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      Are you sure you want to delete {{ $data->fullname }} ?
+                      <input type="hidden" name="delete_id" id="delete_id">
+                      Are you sure you want to delete ?
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
@@ -175,16 +166,6 @@
               </div>
             </div>
 
-            @section('script')
-            <script>
-              $('#deleteCustomer').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget);
-                var action = button.data('action');
-                var modal = $(this);
-                modal.find('form').attr('action', action);
-              });
-            </script>
-            @endsection
             <!-- /.Delete Modal -->
           </div>
           <!-- /.card -->
@@ -200,3 +181,16 @@
 <!-- /.content-wrapper -->
 
 @include('customer.partials.footer')
+<script>
+  $( document ).ready(function() {
+    $('.deleteDataBtn').click(function(e){
+      e.preventDefault();
+
+      var data_id = $(this).val();
+      console.log(data_id);
+      $('#delete_id').val(data_id);
+
+      $('#deleteModal').modal('show');
+    });
+  });  
+</script>

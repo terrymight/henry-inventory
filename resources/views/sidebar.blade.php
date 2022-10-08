@@ -53,6 +53,7 @@
              </p>
            </a>
          </li>
+         
 
          @if(Auth::user()->role_permission == 1)
          <li class="nav-item menu-close">
@@ -118,6 +119,18 @@
            </ul>
          </li>
          @endif
+         <li class="nav-item">
+          <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <p>
+             Log out
+            </p>
+          </a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+          </form>
+        </li>
+         
 
 
        </ul>

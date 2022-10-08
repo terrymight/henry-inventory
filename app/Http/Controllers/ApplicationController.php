@@ -20,7 +20,7 @@ class ApplicationController extends Controller
             'phone' => '2347010199700',
             'email' => 'info@gmail.com',
             'address' => 'ASEMANKSE STREET WUSE ZONE 2, ABUJA NIGERIA'
-        ])->where('id', 1)->get();
+        ])->get();
         return view('application.index', compact('datas'));
     }
 

@@ -7,7 +7,6 @@ use App\Http\Sms\Whispersms;
 use App\Models\Application;
 use App\Models\customer;
 use App\Models\Comments;
-use App\Models\DispatcherState;
 use App\Models\Product;
 use App\Models\state;
 use App\Models\User;
@@ -35,7 +34,7 @@ class CustomersController extends Controller
                     ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'customers.customer_state')
                     ->where('customers.dispatcher_id',Auth::user()->id)
                     ->get([
-                        'customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
+                        'customers.customer_address','customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
                         'users.name as owned_by',
                         'states.name as customer_state'
                     ]);
@@ -45,7 +44,7 @@ class CustomersController extends Controller
                     ->join('dispatcher_state', 'dispatcher_state.state_id', '=', 'customers.customer_state')
                     ->where('customers.user_id',Auth::user()->id)
                     ->get([
-                        'customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
+                        'customers.customer_address','customers.id','customers.fullname','customers.invoice_number','customers.phone_number','customers.products','customers.products_status','customers.total_cost_of_products',
                         'users.name as owned_by',
                         'states.name as customer_state'
                     ]);
@@ -96,7 +95,6 @@ class CustomersController extends Controller
             'products' => 'required|max:255',
             'date_of_delivery' => 'required|max:255',
             'customer_address' => 'required|max:255',
-            'dispatcher_note' => 'required|max:255',
         ]);
 
         $data = customer::create([
@@ -113,11 +111,13 @@ class CustomersController extends Controller
             'customer_email' => $request->customer_email,
             'invoice_number' => $this->set_invoice(),
         ]);
-
-        Comments::create([
-            'comments_name' => $request->dispatcher_note,
-            'invoice_id' => $data->id,
-        ]);
+        if(!empty($request->dispatcher_note)){
+            Comments::create([
+                'comments_name' => $request->dispatcher_note,
+                'invoice_id' => $data->id,
+            ]);
+        }
+       
 
         return redirect('/customers/list');
         
@@ -136,7 +136,7 @@ class CustomersController extends Controller
 
         $data = customer::find($id);
 
-        $application = Application::where('id', 1)->first();
+        $application = Application::first();
         return view('customer.show', compact('data', 'application', 'err'));
     }
 
@@ -206,10 +206,10 @@ class CustomersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $del_req = customer::where('id', $id)->firstOrFail();
-        $del_req->delete();
+    
+        customer::where('id', $request->delete_id)->delete();
         return redirect()->route('customers.list');
     }
 

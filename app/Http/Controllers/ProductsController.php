@@ -39,7 +39,7 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255', 'unique:products',
         ]);
         Product::create([
             'name' => $request->name,
@@ -96,8 +96,9 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        Product::where('id', $request->delete_id)->delete();
+       return redirect('products/list');
     }
 }

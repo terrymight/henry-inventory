@@ -63,21 +63,18 @@
                   <tr>
                     <td class="col-md-8">{{ $data->name }}</td>
                     <td class="project-actions text-right">
-                      <a class="btn btn-primary btn-sm" href="#">
-                        <i class="fas fa-folder">
-                        </i>
-                        View
-                      </a>
+                      
                       <a class="btn btn-info btn-sm" href="{{ url('products/'.$data->id.'/edit') }}">
                         <i class="fas fa-pencil-alt">
                         </i>
                         Edit
                       </a>
-                      <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteProduct">
+                      {{-- <a class="btn btn-danger btn-sm" data-category="{{ $data->id }}" data-toggle="modal" data-target="#deleteProduct">
                         <i class="fas fa-trash">
                         </i>
                         Delete
-                      </a>
+                      </a> --}}
+                      <button value="{{ $data->id }}" class="btn btn-danger btn-sm deleteDataBtn" type="button"><i class="fas fa-trash"></i>Delete</button>
                     </td>
                   </tr>
                   @endforeach
@@ -91,12 +88,11 @@
               </table>
             </div>
             <!-- Delete Modal -->
-            <div class="modal fade" id="deleteProduct" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteProduct" aria-hidden="true">
+            <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteProduct" aria-hidden="true">
               <div class="modal-dialog modal-sm" role="document">
                 @isset ($data->id)
-                <form method="POST" action="{{  url('products/destroy/'. $data->id) }}">
-                  @method('DELETE')
-
+                <form method="POST" action="{{  url('products/destroy') }}">
+                  
                   @csrf
 
                   <div class="modal-content">
@@ -107,7 +103,8 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      Are you sure you want to delete {{ $data->name }} ?
+                      <input type="hidden" name="delete_id" id="delete_id">
+                      Are you sure you want to delete ?
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn bg-white" data-dismiss="modal">Close</button>
@@ -118,17 +115,6 @@
                 @endisset
               </div>
             </div>
-
-            @section('script')
-            <script>
-              $('#deleteProduct').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget);
-                var action = button.data('action');
-                var modal = $(this);
-                modal.find('form').attr('action', action);
-              });
-            </script>
-            @endsection
             <!-- /.Delete Modal -->
             <!-- /.card-body -->
           </div>
@@ -147,3 +133,16 @@
 
 
 @include('customer.partials.footer')
+
+<script>
+  $( document ).ready(function() {
+    $('.deleteDataBtn').click(function(e){
+      e.preventDefault();
+
+      var data_id = $(this).val();
+      $('#delete_id').val(data_id);
+
+      $('#deleteModal').modal('show');
+    });
+  });  
+</script>
